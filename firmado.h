@@ -17,6 +17,7 @@
 #include "par_de_claves.h"
 #include "firma.h"
 
+
 class Firmado{
 private:
     static const unsigned int tamanio_de_buffer_default = 2048;

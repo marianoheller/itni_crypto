@@ -4,8 +4,8 @@
 /*
  * Define para que no haya errores de compatibilidad entre diferentes GCC's
  * Source: GCC 5 Release Notes/Dual ABI
+ * https://gcc.gnu.org/onlinedocs/libstdc++/manual/using_dual_abi.html
  * */
-#define _GLIBCXX_USE_CXX11_ABI 0
 
 
 #include <iostream>
@@ -13,6 +13,9 @@
 #include <string>
 #include <vector>
 #include <cstring>
+
+#include <QString>
+#include <QVector>
 
 
 #include "verificador.h"
@@ -29,14 +32,15 @@
 #define OK					0
 
 
+
 class CryptoEngine
 {
 public:
     CryptoEngine( int argc,char* argv[] );
     ~CryptoEngine();
     void showHelp();
-    int firmar(const std::string& nombreArchivoOrigen,const std::string& nombreArchivoSalida,ParDeClaves& parDeClaves);
-    int verificar(const std::string& nombreArchivoOrigen,const std::string& nombreArchivoSalida,ParDeClaves& parDeClaves);
+    int firmar(QString nombreArchivoOrigen,QString nombreArchivoSalida,ParDeClaves& parDeClaves);
+    int verificar(QString nombreArchivoOrigen,QString nombreArchivoSalida,ParDeClaves& parDeClaves);
 
 private:
     int ejecutarParametros(int argc,char* argv[]);

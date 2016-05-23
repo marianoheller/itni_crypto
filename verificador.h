@@ -6,6 +6,7 @@
 
 #include <fstream>
 
+
 class Verificador{
 private:
     static const unsigned int tamanio_de_buffer_default = 2048;

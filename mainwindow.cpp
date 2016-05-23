@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 
 
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -117,7 +118,6 @@ void MainWindow::on_pushButton_verif_loadData_clicked()
         ui->pushButton_verif_verificar->setDisabled(true);
         ui->pushButton_verif_verificar->setToolTip("Debe cargar TODOS los archivos necesarios para poder verificar");
     }
-
 }
 
 void MainWindow::on_pushButton_verif_publicKey_clicked()
@@ -167,4 +167,47 @@ void MainWindow::on_pushButton_verif_firma_clicked()
         ui->pushButton_verif_verificar->setToolTip("Debe cargar TODOS los archivos necesarios para poder verificar");
     }
 
+}
+
+
+
+void MainWindow::on_pushButton_firm_firmar_clicked()
+{
+    FraseDialog *dialog = new FraseDialog(this);
+    if ( dialog->exec() == QDialog::Accepted )
+    {
+        QString dir = QFileDialog::getExistingDirectory(this,
+                                                        tr("Elegir carpeta"),
+                                                        QString(),
+                                                        QFileDialog::ShowDirsOnly| QFileDialog::DontResolveSymlinks);
+        if ( !firmData->isOpen() && !firmPrivateKey->isOpen() ) {
+            ui->plainTextEdit_log->appendPlainText("Error de firmado. Archivos no se pudieron abrir");
+            return;
+        }
+        firmData->close();
+        firmPrivateKey->close();
+        QString commandParams = "cryptoEngine -f " + firmPrivateKey->fileName() + " -i " + firmData->fileName();
+        if ( !dialog->GetFrase().isEmpty() )
+            commandParams += " -e " + dialog->GetFrase();
+        if ( !dir.isEmpty() )
+            if ( dir.at(dir.size()-1) != QChar('/') )
+                dir.append("/");
+            commandParams += " -d " + dir;
+        QStringList commandParamsList = commandParams.split(" ");
+        char **argv = new char*[commandParamsList.size()];
+        int argc = commandParamsList.size();
+        qDebug("Input:");
+        qDebug(QString::number(argc).toStdString().c_str());
+        for ( int i=0 ; i<commandParamsList.size() ; i++ ) {
+            argv[i] = new char [strlen(commandParamsList.at(i).toStdString().c_str()) + 1];
+            strcpy(argv[i], commandParamsList.at(i).toStdString().c_str());
+            qDebug(argv[i]);
+        }
+        qDebug("=========================================");
+        CryptoEngine( argc , argv );
+        ui->plainTextEdit_log->appendPlainText("Firmado.");
+    }
+    else {
+        ui->plainTextEdit_log->appendPlainText("Debe ingresar la frase de la Clave Privada para poder firmar.");
+    }
 }

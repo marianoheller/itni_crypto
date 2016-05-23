@@ -1,6 +1,7 @@
 #include "big_num.h"
 #include "byte_utils.h"
 
+
 const void Bignum::toString(std::string& bnStr){
 	int len = BN_num_bytes(this->bn);
 	unsigned char* temp = new unsigned char[len];

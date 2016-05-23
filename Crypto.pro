@@ -12,6 +12,11 @@ TARGET = Crypto
 TEMPLATE = app
 
 
+QMAKE_CXXFLAGS -= -Wunused-variable -std=c++98
+
+QMAKE_LFLAGS += -Wl,-R/home/mariano/firmado/openssl-1.0.1s/ssldir/lib/
+
+
 SOURCES += main.cpp\
         mainwindow.cpp \
     cryptoengine.cpp \
@@ -20,7 +25,8 @@ SOURCES += main.cpp\
     verificador.cpp \
     firmado.cpp \
     firma.cpp \
-    par_de_claves.cpp
+    par_de_claves.cpp \
+    frasedialog.cpp
 
 HEADERS  += mainwindow.h \
     cryptoengine.h \
@@ -31,9 +37,11 @@ HEADERS  += mainwindow.h \
     firmado.h \
     firma.h \
     par_de_claves.h \
-    par_de_claves_default.h
+    par_de_claves_default.h \
+    frasedialog.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    frasedialog.ui
 
 RESOURCES += \
     res.qrc
@@ -42,9 +50,10 @@ RESOURCES += \
 INCLUDEPATH += /home/mariano/firmado/openssl-1.0.1s/ssldir/include
 DEPENDPATH += /home/mariano/firmado/openssl-1.0.1s/ssldir/include
 
-LIBS += -L$$PWD/../../../../firmado/openssl-1.0.1s/ssldir/lib/ -lcrypto
+LIBS += -L/home/mariano/firmado/openssl-1.0.1s/ssldir/lib/ -lcrypto
+#PRE_TARGETDEPS += /home/mariano/firmado/openssl-1.0.1s/ssldir/lib/libcrypto.a
 
-#INCLUDEPATH += $$PWD/../../../../firmado/openssl-1.0.1s/ssldir/include
-#DEPENDPATH += $$PWD/../../../../firmado/openssl-1.0.1s/ssldir/include
 
-PRE_TARGETDEPS += $$PWD/../../../../firmado/openssl-1.0.1s/ssldir/lib/libcrypto.a
+#QMAKE_RPATHDIR += /home/mariano/firmado/openssl-1.0.1s/ssldir/lib/
+#LIBS += -lcrypto
+

@@ -5,6 +5,7 @@
 #include <openssl/fips.h>
 #include <cstring>
 
+
 bool Verificador::verificar(ParDeClaves& parDeClaves, std::istream& mensaje, std::istream& firma){
     std::string firmaString;
     leerInput(firma, firmaString);

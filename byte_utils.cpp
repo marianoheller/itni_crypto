@@ -1,6 +1,7 @@
 #include "byte_utils.h"
 #include <cstdlib>
 
+
 void ByteUtils::convertStringBytesToHex(const std::string& in,std::string& out){
 	std::string temp = in;
 	std::string::const_iterator it = temp.begin();

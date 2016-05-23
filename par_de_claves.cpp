@@ -11,6 +11,7 @@
 #include <openssl/rand.h>
 
 
+
 ParDeClaves::ParDeClaves(){
     this->rsa = claveDefaultComoRSA();
     longitudDeDEnBits = ParDeClaves::longitud_de_d_en_bits_default;
@@ -33,21 +34,21 @@ ParDeClaves::ParDeClaves(int modulo,int exponente){
     longitudDeNEnBits = modulo;
 }
 
-ParDeClaves::ParDeClaves(const std::string& filename, bool privada,const std::string& frase){
-    FILE* fp = fopen(filename.c_str(),"rb");
+ParDeClaves::ParDeClaves(QString filename, bool privada,QString frase){
+    FILE* fp = fopen(filename.toStdString().c_str(),"rb");
     this->rsa = FIPS_rsa_new();
     // FIPS_rsa_new no setea las referencias en 1 es necesario hacerlo a mano
     this->rsa->references = 1;
 
     if(privada){
 
-        if(frase.empty()){
+        if(frase.isEmpty()){
             if(!PEM_read_RSAPrivateKey(fp,&this->rsa,0,0)){
                 fclose(fp);
                 throw "Error al leer la clave";
             }
         }else{
-            if(!PEM_read_RSAPrivateKey(fp,&this->rsa,NULL,(void *)frase.c_str())){
+            if(!PEM_read_RSAPrivateKey(fp,&this->rsa,NULL,(void *)frase.toStdString().c_str())){
                 fclose(fp);
                 throw "Error al leer la clave";
             }
@@ -96,15 +97,15 @@ ParDeClaves::operator RSA*()const{
     return this->rsa;
 }
 
-void ParDeClaves::imprimirClaves(const std::string& filePath,const std::string& frase,bool encriptar){
-    FILE* fp = fopen(filePath.c_str(),"wb");
+void ParDeClaves::imprimirClaves( QString filePath,QString frase,bool encriptar){
+    FILE* fp = fopen(filePath.toStdString().c_str(),"wb");
     if(fp==NULL)
         throw "Error al abrir el archivo";
 
 
-    if(!frase.empty() || encriptar){
-        if(!frase.empty()){
-            if(!PEM_write_RSAPrivateKey(fp,this->rsa,EVP_des_ede3_cbc(),(unsigned char*)frase.c_str(),frase.length(),NULL,NULL)){
+    if(!frase.isEmpty() || encriptar){
+        if(!frase.isEmpty()){
+            if(!PEM_write_RSAPrivateKey(fp,this->rsa,EVP_des_ede3_cbc(),(unsigned char*)frase.toStdString().c_str(),frase.length(),NULL,NULL)){
                 fclose(fp);
                 throw "Error al escribir la clave";
             }
@@ -124,8 +125,8 @@ void ParDeClaves::imprimirClaves(const std::string& filePath,const std::string& 
     fclose(fp);
 }
 
-void ParDeClaves::imprimirPublica(const std::string& filePath){
-    FILE* fp = fopen(filePath.c_str(),"wb");
+void ParDeClaves::imprimirPublica( QString filePath){
+    FILE* fp = fopen(filePath.toStdString().c_str(),"wb");
     if(fp==NULL)
         throw "Error al abrir el archivo";
 

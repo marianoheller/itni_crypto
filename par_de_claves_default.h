@@ -5,6 +5,7 @@
 #include "byte_utils.h"
 #include "big_num.h"
 
+
 unsigned int ParDeClaves::longitud_de_d_en_bits_default = 1024;
 unsigned int ParDeClaves::longitud_de_n_en_bits_default = 1024;
 

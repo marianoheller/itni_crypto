@@ -5,6 +5,7 @@
 #include <iostream>
 #include <openssl/bn.h>
 
+
 class ByteUtils {
 public:
 	static void convertLittleToBigEndian(const std::string& littleEndian, std::string& bigEndian);

@@ -1,31 +1,34 @@
 #include "cryptoengine.h"
 
+
 CryptoEngine::CryptoEngine(int argc, char *argv[])
 {
     try{
             OpenSSLState::instance().setFipsModeOn();
             OpenSSLState::instance().addAllAlgorithms();
         }catch(std::string ex){
-            std::cout << "Ocurrio una excepcion: " << ex << " , abortando..." << std::endl;
-            //return ERROR_INTERNO;
+            qDebug("Ocurrio una excepcion: %s , abortando...", ex.c_str());
+            qDebug("Error interno de inicializacion: %d",ERROR_INTERNO);
             return;
         }
 
         try{
             int val =  ejecutarParametros(argc,argv);
             OpenSSLState::instance().cleanAll();
-            //return val;
+            qDebug("Ejecutar parametros returns: %d",val);
             return;
         }catch(const char* mess){
             OpenSSLState::instance().cleanAll();
-            std::cout << "Ocurrio una excepcion: " << mess << std::endl;
-            //return ERROR_INTERNO;
+            qDebug("Ocurrio una excepcion: %s",mess);
+            qDebug("Error interno: %d",ERROR_INTERNO);
             return;
         }
 
 }
 
-
+CryptoEngine::~CryptoEngine() {
+    return;
+}
 
 int CryptoEngine::ejecutarParametros(int argc,char* argv[])
 {
@@ -34,7 +37,7 @@ int CryptoEngine::ejecutarParametros(int argc,char* argv[])
         return ERROR_INTERNO;
     }
 
-    std::string workPath=".";
+    QString workPath=".";
     bool generarClaves=false;
     int  accionIdx = -1;
     bool firmarArch=false;
@@ -91,14 +94,14 @@ int CryptoEngine::ejecutarParametros(int argc,char* argv[])
 
     if(generarClaves){
         if(accionIdx+1<argc){
-            std::string filename(argv[accionIdx+1]);
+            QString filename(argv[accionIdx+1]);
             ParDeClaves* claves = new ParDeClaves(1024,65537);
-            std::string filenamePrivada = filename+".privada.pem";
-            std::string filenamePublica = filename+".publica.pem";
+            QString filenamePrivada = filename+".privada.pem";
+            QString filenamePublica = filename+".publica.pem";
 
-            std::string frase = "";
+            QString frase = "";
             if(usarFrase && usarFraseIdx+1<argc && !esParametro(argv[usarFraseIdx+1]))
-              frase = std::string(argv[usarFraseIdx+1]);
+              frase = QString(argv[usarFraseIdx+1]);
 
             // La privada contiene el par de claves, utilizar el binario de la openssl
             // si se quiere extraer la publica
@@ -113,7 +116,7 @@ int CryptoEngine::ejecutarParametros(int argc,char* argv[])
             return ERROR_INTERNO;
         }
     }else if(firmarArch || verificarArch){
-        std::vector<std::string> aInputList;
+        QVector<QString> aInputList;
 
         if(verificarArch && usarFrase){
           showHelp();
@@ -122,28 +125,27 @@ int CryptoEngine::ejecutarParametros(int argc,char* argv[])
 
         if(inputList){
             for(int i=inputListIdx+1; (i<argc) && !esParametro(argv[i]) ; i++){
-                aInputList.push_back(std::string(argv[i]));
+                aInputList.push_back(QString(argv[i]));
             }
         }
 
-        std::string frase = "";
+        QString frase = "";
         if(usarFrase && !esParametro(argv[usarFraseIdx+1]))
-            frase = std::string(argv[usarFraseIdx+1]);
+            frase = QString(argv[usarFraseIdx+1]);
 
         ParDeClaves* claves;
         if( (accionIdx+1<argc) && !esParametro(argv[accionIdx+1])){
-            claves = new ParDeClaves(std::string(argv[accionIdx+1]),firmarArch,frase);
+            claves = new ParDeClaves(QString(argv[accionIdx+1]),firmarArch,frase);
         }else{
             claves = new ParDeClaves();
         }
 
+
         int retVal = OK;
         for(int i=0;i<aInputList.size();i++){
-            std::string nombreArchivoOrigen = aInputList[i];
-            std::string nombreArchivoSalida = workPath + "/" +
-                nombreArchivoOrigen.substr(
-                    nombreArchivoOrigen.find_last_of("/")+1,
-                    nombreArchivoOrigen.length()) + ".sign";
+            QString nombreArchivoOrigen = aInputList[i];
+            QString nombreArchivoSalida = workPath + "/" +
+                nombreArchivoOrigen.mid( nombreArchivoOrigen.lastIndexOf("/")+1, nombreArchivoOrigen.length() ) + ".sign";
 
             if(firmarArch){
                 firmar(nombreArchivoOrigen,nombreArchivoSalida,*claves);
@@ -160,18 +162,44 @@ int CryptoEngine::ejecutarParametros(int argc,char* argv[])
 }
 
 
-int CryptoEngine:: verificar(const std::string& nombreArchivoOrigen,const std::string& nombreArchivoSalida,ParDeClaves& parDeClaves)
+int CryptoEngine::firmar(QString nombreArchivoOrigen,QString nombreArchivoSalida,ParDeClaves& parDeClaves)
 {
-    std::ifstream archivoMensaje(nombreArchivoOrigen.c_str(), std::fstream::binary);
-    std::ifstream archivoFirma(nombreArchivoSalida.c_str());
+    std::ifstream archivoOrigen(nombreArchivoOrigen.toStdString().c_str(), std::fstream::binary);
+    if (!archivoOrigen.is_open()){
+        std::cout << "Se ignora el archivo " << nombreArchivoOrigen.toStdString() << " debido a que no se pudo abrir. Compruebe si lo tipeo correctamente." << std::endl;
+        return ERROR_FIRMA;
+    }
+    std::ofstream archivoDestino(nombreArchivoSalida.toStdString().c_str(),std::fstream::trunc);
+
+    if(!archivoDestino.is_open()){
+        std::cout << "No puede escribirse la firma en el archivo " << nombreArchivoSalida.toStdString() << "." << std::endl;
+        return ERROR_FIRMA;
+    }
+
+    Firma* firma = Firmado::instance().firmar(parDeClaves,archivoOrigen);
+    firma->imprimir(archivoDestino);
+    delete firma;
+
+    archivoOrigen.close();
+    archivoDestino.close();
+
+    std::cout << nombreArchivoOrigen.toStdString() << " firmado." << std::endl;
+
+}
+
+
+int CryptoEngine:: verificar(QString nombreArchivoOrigen,QString nombreArchivoSalida,ParDeClaves& parDeClaves)
+{
+    std::ifstream archivoMensaje(nombreArchivoOrigen.toStdString().c_str(), std::fstream::binary);
+    std::ifstream archivoFirma(nombreArchivoSalida.toStdString().c_str());
 
     if (!archivoMensaje.is_open()){
-        std::cout << "Se ignora la verificacion del archivo " << nombreArchivoOrigen << " debido a que no se pudo abrir. Compruebe si lo tipeo correctamente." << std::endl;
+        std::cout << "Se ignora la verificacion del archivo " << nombreArchivoOrigen.toStdString() << " debido a que no se pudo abrir. Compruebe si lo tipeo correctamente." << std::endl;
         return ERROR_INTERNO;
     }
 
     if (!archivoFirma.is_open()){
-        std::cout << "Se ignora la verificacion del el archivo " << nombreArchivoOrigen << " debido a que no se encontro el archivo de firma " << nombreArchivoSalida << "." << std::endl;
+        std::cout << "Se ignora la verificacion del el archivo " << nombreArchivoOrigen.toStdString() << " debido a que no se encontro el archivo de firma " << nombreArchivoSalida.toStdString() << "." << std::endl;
         return ERROR_INTERNO;
     }
 
@@ -179,10 +207,10 @@ int CryptoEngine:: verificar(const std::string& nombreArchivoOrigen,const std::s
     Verificador verificador;
     try{
         if (verificador.verificar(parDeClaves, archivoMensaje, archivoFirma)){
-            std::cout << nombreArchivoSalida << " verifica." << std::endl;
+            std::cout << nombreArchivoSalida.toStdString() << " verifica." << std::endl;
             verif = true;
         } else {
-            std::cout << "ERROR , " << nombreArchivoSalida << " NO verifica" << std::endl;
+            std::cout << "ERROR , " << nombreArchivoSalida.toStdString() << " NO verifica" << std::endl;
         }
     }catch(std::string ex){
         std::cout << ex << std::endl;

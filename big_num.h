@@ -1,6 +1,7 @@
 #ifndef __BIG_NUM_H__
 #define __BIG_NUM_H__
 
+
 #include <openssl/bn.h>
 #include <string>
 #include <iostream>

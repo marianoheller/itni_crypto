@@ -3,11 +3,15 @@
 #ifndef __PAR_DE_CLAVES_H__
 #define __PAR_DE_CLAVES_H__
 
+
 #include <string>
 #include <cstring>
 #include <openssl/fips.h>
 #include <openssl/rsa.h>
 #include <memory>
+
+#include <QString>
+
 
 class ParDeClaves{
     static unsigned int longitud_de_d_en_bits_default;
@@ -26,7 +30,7 @@ public:
 
     ParDeClaves();
     ParDeClaves(int modulo,int exponente);
-    ParDeClaves(const std::string& filename,bool privada,const std::string& frase);
+    ParDeClaves(QString filename,bool privada,QString frase);
 
     ~ParDeClaves();
 
@@ -44,9 +48,9 @@ public:
 
     operator RSA*()const;
 
-    void imprimirClaves(const std::string& filePath,const std::string& frase,bool encriptar);
+    void imprimirClaves( QString filePath,  QString frase,bool encriptar);
 
-    void imprimirPublica(const std::string& filePath);
+    void imprimirPublica( QString filePath);
 
 };
 
