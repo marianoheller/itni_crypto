@@ -206,51 +206,52 @@ void MainWindow::on_pushButton_firm_firmar_clicked()
                                                         tr("Elegir carpeta"),
                                                         QString(),
                                                         QFileDialog::ShowDirsOnly| QFileDialog::DontResolveSymlinks);
-        if ( !firmData->isOpen() && !firmPrivateKey->isOpen() ) {
-            ui->plainTextEdit_log->appendPlainText("Error de firmado. Archivos no se pudieron abrir");
-            return;
-        }
-        firmData->close();
-        firmPrivateKey->close();
-        QString commandParams = "cryptoEngine -f " + firmPrivateKey->fileName() + " -i " + firmData->fileName();
-        if ( !dialog->GetFrase().isEmpty() )
-            commandParams += " -e " + dialog->GetFrase();
-        if ( !dir.isEmpty() ) {
-            if ( dir.at(dir.size()-1) != QChar('/') )
-                dir.append("/");
-            commandParams += " -d " + dir;
-        }
-        QStringList commandParamsList = commandParams.split(" ");
-        char **argv = new char*[commandParamsList.size()];
-        int argc = commandParamsList.size();
-        qDebug("Input:");
-        qDebug(QString::number(argc).toStdString().c_str());
-        for ( int i=0 ; i<commandParamsList.size() ; i++ ) {
-            argv[i] = new char [strlen(commandParamsList.at(i).toStdString().c_str()) + 1];
-            strcpy(argv[i], commandParamsList.at(i).toStdString().c_str());
-            qDebug("%d) %s",i,argv[i]);
-        }
-        qDebug("=========================================");
-        CryptoEngine* engine = new CryptoEngine( argc , argv );
-        if ( engine->GetCryptoEngineStatus() == OK) {
-            ui->plainTextEdit_log->appendPlainText("Firmando el archivo " + QFileInfo(firmData->fileName()).fileName() + " ...");
-            ui->plainTextEdit_log->appendHtml("<html><font color=\"green\"><b>Firmado correctamente.</b></font></html>");
-        }
-        else {
-            ui->plainTextEdit_log->appendHtml("<html><font color=\"red\"><b>Error de firmado.</b></font></html>");
-            if (!engine->GetCryptoEngineStatusString().isEmpty())
-                ui->plainTextEdit_log->appendHtml("<html><font color=\"red\">"+engine->GetCryptoEngineStatusString()+"</font></html>");
-        }
+        if ( !dir.isEmpty())
+        {
+            if ( !firmData->isOpen() && !firmPrivateKey->isOpen() ) {
+                ui->plainTextEdit_log->appendPlainText("Error de firmado. Archivos no se pudieron abrir");
+                return;
+            }
+            firmData->close();
+            firmPrivateKey->close();
+            QString commandParams = "cryptoEngine -f " + firmPrivateKey->fileName() + " -i " + firmData->fileName();
+            if ( !dialog->GetFrase().isEmpty() )
+                commandParams += " -e " + dialog->GetFrase();
+            if ( !dir.isEmpty() ) {
+                if ( dir.at(dir.size()-1) != QChar('/') )
+                    dir.append("/");
+                commandParams += " -d " + dir;
+            }
+            QStringList commandParamsList = commandParams.split(" ");
+            char **argv = new char*[commandParamsList.size()];
+            int argc = commandParamsList.size();
+            qDebug("Input:");
+            qDebug(QString::number(argc).toStdString().c_str());
+            for ( int i=0 ; i<commandParamsList.size() ; i++ ) {
+                argv[i] = new char [strlen(commandParamsList.at(i).toStdString().c_str()) + 1];
+                strcpy(argv[i], commandParamsList.at(i).toStdString().c_str());
+                qDebug("%d) %s",i,argv[i]);
+            }
+            qDebug("=========================================");
+            CryptoEngine* engine = new CryptoEngine( argc , argv );
+            if ( engine->GetCryptoEngineStatus() == OK) {
+                ui->plainTextEdit_log->appendPlainText("Firmando el archivo " + QFileInfo(firmData->fileName()).fileName() + " ...");
+                ui->plainTextEdit_log->appendHtml("<html><font color=\"green\"><b>Firmado correctamente.</b></font></html>");
+            }
+            else {
+                ui->plainTextEdit_log->appendHtml("<html><font color=\"red\"><b>Error de firmado.</b></font></html>");
+                if (!engine->GetCryptoEngineStatusString().isEmpty())
+                    ui->plainTextEdit_log->appendHtml("<html><font color=\"red\">"+engine->GetCryptoEngineStatusString()+"</font></html>");
+            }
 
-        //ReOpen stuff
-        if(!firmPrivateKey->open(QIODevice::ReadOnly)) {
-            QMessageBox::information(this, "Error al leer el archivo", firmPrivateKey->fileName()+" "+firmPrivateKey->errorString());
+            //ReOpen stuff
+            if(!firmPrivateKey->open(QIODevice::ReadOnly)) {
+                QMessageBox::information(this, "Error al leer el archivo", firmPrivateKey->fileName()+" "+firmPrivateKey->errorString());
+            }
+            if(!firmData->open(QIODevice::ReadOnly)) {
+                QMessageBox::information(this, "Error al leer el archivo", firmData->fileName()+" "+firmData->errorString());
+            }
         }
-        if(!firmData->open(QIODevice::ReadOnly)) {
-            QMessageBox::information(this, "Error al leer el archivo", firmData->fileName()+" "+firmData->errorString());
-        }
-
-
     }
     else {
         ui->plainTextEdit_log->appendPlainText("Debe ingresar la frase de la Clave Privada para poder firmar.");
