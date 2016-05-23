@@ -12,9 +12,21 @@ TARGET = Crypto
 TEMPLATE = app
 
 
+debug:   DESTDIR = build/debug
+release: DESTDIR = build/release
+
+OBJECTS_DIR = $$DESTDIR/.obj
+MOC_DIR = $$DESTDIR/.moc
+RCC_DIR = $$DESTDIR/.qrc
+UI_DIR = $$DESTDIR/.ui
+
+
+
 QMAKE_CXXFLAGS -= -Wunused-variable -std=c++98
 
-QMAKE_LFLAGS += -Wl,-R/home/mariano/firmado/openssl-1.0.1s/ssldir/lib/
+QMAKE_LFLAGS_DEBUG += -Wl,-R/home/mariano/firmado/openssl-1.0.1s/ssldir/lib/
+QMAKE_LFLAGS_RELEASE += -Wl,-R/usr/lib/ssl/fips/
+
 
 
 SOURCES += main.cpp\
