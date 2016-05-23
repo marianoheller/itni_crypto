@@ -3,6 +3,8 @@
 
 CryptoEngine::CryptoEngine(int argc, char *argv[])
 {
+    cryptoEngineStatus = OK;
+    cryptoEngineStatusString = "";
     try{
             OpenSSLState::instance().setFipsModeOn();
             OpenSSLState::instance().addAllAlgorithms();
@@ -16,11 +18,14 @@ CryptoEngine::CryptoEngine(int argc, char *argv[])
             int val =  ejecutarParametros(argc,argv);
             OpenSSLState::instance().cleanAll();
             qDebug("Ejecutar parametros returns: %d",val);
+            cryptoEngineStatus = val;
             return;
         }catch(const char* mess){
             OpenSSLState::instance().cleanAll();
             qDebug("Ocurrio una excepcion: %s",mess);
             qDebug("Error interno: %d",ERROR_INTERNO);
+            cryptoEngineStatus = ERROR_INTERNO;
+            cryptoEngineStatusString = mess;
             return;
         }
 
@@ -28,6 +33,14 @@ CryptoEngine::CryptoEngine(int argc, char *argv[])
 
 CryptoEngine::~CryptoEngine() {
     return;
+}
+
+int CryptoEngine::GetCryptoEngineStatus() {
+    return cryptoEngineStatus;
+}
+
+QString CryptoEngine::GetCryptoEngineStatusString() {
+    return cryptoEngineStatusString;
 }
 
 int CryptoEngine::ejecutarParametros(int argc,char* argv[])

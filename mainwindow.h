@@ -38,7 +38,9 @@ private slots:
     void on_pushButton_verif_loadData_clicked();
     void on_pushButton_verif_publicKey_clicked();
     void on_pushButton_verif_firma_clicked();
+
     void on_pushButton_firm_firmar_clicked();
+    void on_pushButton_verif_verificar_clicked();
 
 private:
     Ui::MainWindow *ui;

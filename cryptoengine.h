@@ -33,6 +33,8 @@
 
 
 
+
+
 class CryptoEngine
 {
 public:
@@ -42,9 +44,14 @@ public:
     int firmar(QString nombreArchivoOrigen,QString nombreArchivoSalida,ParDeClaves& parDeClaves);
     int verificar(QString nombreArchivoOrigen,QString nombreArchivoSalida,ParDeClaves& parDeClaves);
 
+    int GetCryptoEngineStatus();
+    QString GetCryptoEngineStatusString();
+
 private:
     int ejecutarParametros(int argc,char* argv[]);
     bool esParametro(char* str);
+    int cryptoEngineStatus;
+    QString cryptoEngineStatusString;
 
 };
 
