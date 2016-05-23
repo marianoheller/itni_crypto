@@ -233,6 +233,7 @@ void MainWindow::on_pushButton_firm_firmar_clicked()
         qDebug("=========================================");
         CryptoEngine* engine = new CryptoEngine( argc , argv );
         if ( engine->GetCryptoEngineStatus() == OK) {
+            ui->plainTextEdit_log->appendPlainText("Firmando el archivo " + QFileInfo(firmData->fileName()).fileName() + " ...");
             ui->plainTextEdit_log->appendHtml("<html><font color=\"green\"><b>Firmado correctamente.</b></font></html>");
         }
         else {
@@ -285,6 +286,7 @@ void MainWindow::on_pushButton_verif_verificar_clicked()
     qDebug("=========================================");
     CryptoEngine* engine = new CryptoEngine( argc , argv );
     if ( engine->GetCryptoEngineStatus() == OK) {
+        ui->plainTextEdit_log->appendPlainText("Verificando el archivo " + QFileInfo(verifData->fileName()).fileName() + " ...");
         ui->plainTextEdit_log->appendHtml("<html><font color=\"green\"><b>Verificado correctamente.</b></font></html>");
     }
     else {
