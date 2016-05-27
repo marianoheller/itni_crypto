@@ -22,10 +22,11 @@ UI_DIR = $$DESTDIR/.ui
 
 
 
-QMAKE_CXXFLAGS -= -Wunused-variable -std=c++98
+QMAKE_CXXFLAGS += -Wunused-variable -std=c++98
 
-QMAKE_LFLAGS_DEBUG += -Wl,-R/home/mariano/firmado/openssl-1.0.1s/ssldir/lib/
-#QMAKE_LFLAGS_RELEASE += -Wl,-Bstatic -L/usr/lib/ssl/fips/  -Wl,-R/usr/lib/ssl/fips/ -lcrypto -Wl,-Bdynamic
+QMAKE_LFLAGS_DEBUG += -Wl,-R/home/mariano/firmado/openssl-1.0.1s/ssldir/lib/        #Anda, setea runpath
+#QMAKE_LFLAGS_DEBUG += -L/home/mariano/firmado/openssl-1.0.1s/ssldir/lib/ -Wl,-Bstatic -Wl,-R/home/mariano/firmado/openssl-1.0.1s/ssldir/lib/ -lcrypto -Wl,-Bdynamic    #No anda
+
 QMAKE_LFLAGS_RELEASE += -Wl,-R/usr/lib/ssl/fips/
 
 
@@ -63,8 +64,24 @@ RESOURCES += \
 INCLUDEPATH += /home/mariano/firmado/openssl-1.0.1s/ssldir/include
 DEPENDPATH += /home/mariano/firmado/openssl-1.0.1s/ssldir/include
 
-LIBS += -Wl,-Bstatic -L/home/mariano/firmado/openssl-1.0.1s/ssldir/lib/ -lcrypto -Wl,-Bdynamic
-PRE_TARGETDEPS += /home/mariano/firmado/openssl-1.0.1s/ssldir/lib/libcrypto.a
+
+LIBS += -Wl,-Bstatic -L/home/mariano/firmado/openssl-1.0.1s/ssldir/lib/ -lcrypto -Wl,-Bdynamic -ldl     #Anda, linkea static
+
+
+debug {    
+    #LIBS += -L/home/mariano/firmado/openssl-1.0.1s/ssldir/lib/ -lcrypto    #Anda, linkea shared
+}
+release {
+    #LIBS += -L/usr/lib/ssl/fips/ -lcrypto      #Anda, linkea shared
+}
+
+
+
+#======================
+#Old stuff
+
+#LIBS += -Wl,-Bstatic -L/home/mariano/firmado/openssl-1.0.1s/ssldir/lib/ -lcrypto -Wl,-Bdynamic
+#PRE_TARGETDEPS += /home/mariano/firmado/openssl-1.0.1s/ssldir/lib/libcrypto.a
 
 
 #QMAKE_RPATHDIR += /home/mariano/firmado/openssl-1.0.1s/ssldir/lib/
