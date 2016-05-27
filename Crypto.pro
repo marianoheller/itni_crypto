@@ -24,10 +24,10 @@ UI_DIR = $$DESTDIR/.ui
 
 QMAKE_CXXFLAGS += -Wunused-variable -std=c++98
 
-QMAKE_LFLAGS_DEBUG += -Wl,-R/home/mariano/firmado/openssl-1.0.1s/ssldir/lib/        #Anda, setea runpath
+QMAKE_LFLAGS += -Wl,-R/home/mariano/firmado/openssl-1.0.1s/ssldir/lib/        #Anda, setea runpath
 #QMAKE_LFLAGS_DEBUG += -L/home/mariano/firmado/openssl-1.0.1s/ssldir/lib/ -Wl,-Bstatic -Wl,-R/home/mariano/firmado/openssl-1.0.1s/ssldir/lib/ -lcrypto -Wl,-Bdynamic    #No anda
 
-QMAKE_LFLAGS_RELEASE += -m32 -Wl,-R/usr/lib/ssl/fips/
+#QMAKE_LFLAGS_RELEASE += -Wl,-R/usr/lib/ssl/fips/
 
 
 
