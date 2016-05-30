@@ -29,6 +29,7 @@
 #define ERROR_INTERNO		-1
 #define ERROR_VERIFICACION	-2
 #define ERROR_FIRMA			-3
+#define ERROR_FIPS          -4
 #define OK					0
 
 

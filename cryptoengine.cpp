@@ -11,6 +11,8 @@ CryptoEngine::CryptoEngine(int argc, char *argv[])
         }catch(std::string ex){
             qDebug("Ocurrio una excepcion: %s , abortando...", ex.c_str());
             qDebug("Error interno de inicializacion: %d",ERROR_INTERNO);
+            cryptoEngineStatus = ERROR_FIPS;
+            cryptoEngineStatusString = ex.c_str();
             return;
         }
 
