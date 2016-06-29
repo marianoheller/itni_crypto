@@ -67,8 +67,8 @@ INCLUDEPATH += /home/mariano/firmado/openssl-1.0.1s/ssldir/include
 DEPENDPATH += /home/mariano/firmado/openssl-1.0.1s/ssldir/include
 
 
-LIBS += -Wl,-Bstatic -L/home/mariano/firmado/openssl-1.0.1s/ssldir/lib/ -lcrypto -Wl,-Bdynamic -ldl     #Static Linking
-#LIBS += -L/home/mariano/firmado/openssl-1.0.1s/ssldir/lib/ -lcrypto -ldl                                #Dynamic Linking
+#LIBS += -Wl,-Bstatic -L/home/mariano/firmado/openssl-1.0.1s/ssldir/lib/ -lcrypto -Wl,-Bdynamic -ldl     #Static Linking
+LIBS += -L/home/mariano/firmado/openssl-1.0.1s/ssldir/lib/ -lcrypto -ldl                                #Dynamic Linking
 
 
 
