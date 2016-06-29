@@ -4,6 +4,9 @@
 #
 #-------------------------------------------------
 
+
+#============================
+## Qt Config
 QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
@@ -21,18 +24,25 @@ RCC_DIR = $$DESTDIR/.qrc
 UI_DIR = $$DESTDIR/.ui
 
 
+#============================
+## UNIX FLAGS
+unix:!macx: QMAKE_CXXFLAGS += -Wunused-variable -std=c++98
 
-QMAKE_CXXFLAGS += -Wunused-variable -std=c++98
+unix:!macx: QMAKE_LFLAGS += -Wl,-R/home/mariano/firmado/openssl-1.0.1s/ssldir/lib/        #Set runpath
+unix:!macx: QMAKE_LFLAGS += -Wl,-R./lib/
 
-QMAKE_LFLAGS += -Wl,-R/home/mariano/firmado/openssl-1.0.1s/ssldir/lib/        #Set runpath
-QMAKE_LFLAGS += -Wl,-R./lib/
-
-#QMAKE_LFLAGS_DEBUG += -L/home/mariano/firmado/openssl-1.0.1s/ssldir/lib/ -Wl,-Bstatic -Wl,-R/home/mariano/firmado/openssl-1.0.1s/ssldir/lib/ -lcrypto -Wl,-Bdynamic    #No anda
-#QMAKE_LFLAGS_RELEASE += -Wl,-R/usr/lib/ssl/fips/
-
-#QMAKE_RPATHDIR += lib/
+#unix:!macx: QMAKE_LFLAGS_DEBUG += -L/home/mariano/firmado/openssl-1.0.1s/ssldir/lib/ -Wl,-Bstatic -Wl,-R/home/mariano/firmado/openssl-1.0.1s/ssldir/lib/ -lcrypto -Wl,-Bdynamic    #No anda
+#unix:!macx: QMAKE_LFLAGS_RELEASE += -Wl,-R/usr/lib/ssl/fips/
 
 
+#============================
+## WINDOWS FLAGS
+win32: QMAKE_CXXFLAGS += -Wunused-variable -std=c++98
+win32: QMAKE_LFLAGS += -Wl,-RD:/usr/local/ssl/lib/      #Set runpath
+
+
+#============================
+## FILES
 SOURCES += main.cpp\
         mainwindow.cpp \
     cryptoengine.cpp \
@@ -63,6 +73,7 @@ RESOURCES += \
     res.qrc
 
 
+
 INCLUDEPATH += /home/mariano/firmado/openssl-1.0.1s/ssldir/include
 DEPENDPATH += /home/mariano/firmado/openssl-1.0.1s/ssldir/include
 
@@ -73,14 +84,29 @@ LIBS += -L/home/mariano/firmado/openssl-1.0.1s/ssldir/lib/ -lcrypto -ldl        
 
 
 
+###########################
+#NOT USING UNIX AND WINDOWS SEPARATION DUE TO OpenSSL not working on Windows
+##########################
 
-#======================
-#Old stuff
+##============================
+## UNIX LINKING
+#unix:!macx: INCLUDEPATH += /home/mariano/firmado/openssl-1.0.1s/ssldir/include
+#unix:!macx: DEPENDPATH += /home/mariano/firmado/openssl-1.0.1s/ssldir/include
 
-#LIBS += -Wl,-Bstatic -L/home/mariano/firmado/openssl-1.0.1s/ssldir/lib/ -lcrypto -Wl,-Bdynamic
-#PRE_TARGETDEPS += /home/mariano/firmado/openssl-1.0.1s/ssldir/lib/libcrypto.a
+##Dynamic and static linking - Choose one
+#unix:!macx: LIBS += -Wl,-Bstatic -L/home/mariano/firmado/openssl-1.0.1s/ssldir/lib/ -lcrypto -Wl,-Bdynamic -ldl     #Static Linking
+#unix:!macx: LIBS += -L/home/mariano/firmado/openssl-1.0.1s/ssldir/lib/ -lcrypto -ldl                                #Dynamic Linking
 
 
-#QMAKE_RPATHDIR += /home/mariano/firmado/openssl-1.0.1s/ssldir/lib/
-#LIBS += -lcrypto
+##============================
+## WINDOWS LINKING
+#win32: LIBS += -LD:/usr/local/ssl/lib/ -llibeayfips64
+
+#win32: INCLUDEPATH += D:/usr/local/ssl/include
+#win32: DEPENDPATH += D:/usr/local/ssl/include
+
+#win32:!win32-g++: PRE_TARGETDEPS += D:/usr/local/ssl/lib/libeayfips64.lib
+
+
+
 
