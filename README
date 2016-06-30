@@ -1,0 +1,53 @@
+CONTENIDOS DE ESTE ARCHIVO
+---------------------
+   
+ * Introduccion
+ * Requerimientos del sistema
+ * Instrucciones de uso
+ * Posibles problemas/FAQ
+
+
+INTRODUCCION
+------------
+El programa INTI-Crypto permite el firmado y la verificacion de la firma de archivos.
+
+
+
+REQUERIMIENTOS DEL SISTEMA
+--------------------------
+El programa corre bajo linux 64 bits. Se necesita tener instalado las librerias Qt5.
+
+Testeado en:
+ * Arch linux
+ * Debian "Jessie"
+ * Ubuntu 16.04
+ * Linux Mint 18 "Sarah"
+
+
+
+INSTRUCCIONES DE USO
+--------------------
+Para ejecutar el programa de debera ejecutar el script Crypto.sh
+IMPORTANTE: NO EJECUTAR EL BINARIO DIRECTAMENTE. ESTO PROVOCARÁ UN ERROR AL QUERES FIRMAR.
+
+Una vez dentro del programa se pueden realizar dos acciones:
+ * Firmar
+ * Verificar
+
+   - Firmar
+
+     Para firmar se necesitan tres items: el archivo que se desea firmar, la clave privada en formato "pem"
+     y el password de la clave privada. NOTA: Otro formato de clave se tomara como erroneo.
+     Una vez cargados el archivo a firmar y la firma privada se deberá dar click al boton "Firmar". Al hacer 
+     esto se pedirá el password y luego el lugar donde guardar la firma.
+     
+
+   - Verificar
+
+     Para verificar tambien se necesitan tres items: el archivo que se desea verificar, la clave publica en
+     formato "pem" y la firma. NOTA: Otro formato de clave se tomara como erroneo.
+     Una vez cargados los tres archivos se deberá hacer click en el boton "Verificar".
+
+
+POSIBLES PROBLEMAS/FAQ
+----------------------
