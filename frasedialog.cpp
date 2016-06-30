@@ -10,6 +10,7 @@ FraseDialog::FraseDialog(QWidget *parent) :
     ui->pushButton_aceptar->setDisabled(true);
     //ui->pushButton_aceptar->setEchoMode(QLineEdit::Password);
     ui->lineEdit_frase->setMinimumWidth(300);
+    ui->lineEdit_frase->setEchoMode(QLineEdit::Password);
 }
 
 FraseDialog::~FraseDialog()

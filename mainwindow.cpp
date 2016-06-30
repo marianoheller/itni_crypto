@@ -225,17 +225,25 @@ void MainWindow::on_pushButton_firm_firmar_clicked()
             QStringList commandParamsList = commandParams.split(" ");
             char **argv = new char*[commandParamsList.size()];
             int argc = commandParamsList.size();
-            qDebug("Input:");
-            qDebug(QString::number(argc).toStdString().c_str());
+            qDebug("=========================================");
+            qDebug( "Input(%s) :",QString::number(argc).toStdString().c_str());
             for ( int i=0 ; i<commandParamsList.size() ; i++ ) {
                 argv[i] = new char [strlen(commandParamsList.at(i).toStdString().c_str()) + 1];
                 strcpy(argv[i], commandParamsList.at(i).toStdString().c_str());
-                qDebug("%d) %s",i,argv[i]);
+                if (argv[i] == dialog->GetFrase()) {
+                    //QString auxPassAstericos = dialog->GetFrase().replace(QRegExp("."),"*");      //No anda la regex con QString:replace (hay q ver...)
+                    qDebug("%s","password");
+                }
+                else
+                    qDebug("%s",argv[i]);
             }
             qDebug("=========================================");
             CryptoEngine* engine = new CryptoEngine( argc , argv );
             if ( engine->GetCryptoEngineStatus() == OK) {
                 ui->plainTextEdit_log->appendPlainText("Firmando el archivo " + QFileInfo(firmData->fileName()).fileName() + " ...");
+                QFileInfo check_file(firmData->fileName());
+                if( check_file.exists() && check_file.isFile() )
+                    ui->plainTextEdit_log->appendHtml("<html><font color=\"red\"><b>Posible</b> conflicto de archivo. Ya existe firma con igual nombre en el directorio.</font></html>");
                 ui->plainTextEdit_log->appendHtml("<html><font color=\"green\"><b>Firmado correctamente.</b></font></html>");
             }
             else {
@@ -251,6 +259,9 @@ void MainWindow::on_pushButton_firm_firmar_clicked()
             if(!firmData->open(QIODevice::ReadOnly)) {
                 QMessageBox::information(this, "Error al leer el archivo", firmData->fileName()+" "+firmData->errorString());
             }
+        }
+        else {
+            ui->plainTextEdit_log->appendPlainText("Debe elegir un directorio para guardar la firma.");
         }
     }
     else {
@@ -277,12 +288,12 @@ void MainWindow::on_pushButton_verif_verificar_clicked()
     QStringList commandParamsList = commandParams.split(" ");
     char **argv = new char*[commandParamsList.size()];
     int argc = commandParamsList.size();
-    qDebug("Input:");
-    qDebug(QString::number(argc).toStdString().c_str());
+    qDebug("=========================================");
+    qDebug( "Input(%s) :",QString::number(argc).toStdString().c_str());
     for ( int i=0 ; i<commandParamsList.size() ; i++ ) {
         argv[i] = new char [strlen(commandParamsList.at(i).toStdString().c_str()) + 1];
         strcpy(argv[i], commandParamsList.at(i).toStdString().c_str());
-        qDebug("%d) %s",i,argv[i]);
+        qDebug("%s",argv[i]);
     }
     qDebug("=========================================");
     CryptoEngine* engine = new CryptoEngine( argc , argv );
