@@ -1,10 +1,10 @@
 CONTENIDOS DE ESTE ARCHIVO
----------------------
+--------------------------
    
  * Introduccion
  * Requerimientos del sistema
  * Instrucciones de uso
- * Posibles problemas/FAQ
+ * Posibles problemas
 
 
 INTRODUCCION
@@ -27,7 +27,7 @@ Testeado en:
 
 INSTRUCCIONES DE USO
 --------------------
-Para ejecutar el programa de debera ejecutar el script Crypto.sh
+Para ejecutar el programa de debera ejecutar el script "Crypto.sh".
 IMPORTANTE: NO EJECUTAR EL BINARIO DIRECTAMENTE. ESTO PROVOCARÁ UN ERROR AL QUERES FIRMAR.
 
 Una vez dentro del programa se pueden realizar dos acciones:
@@ -49,5 +49,7 @@ Una vez dentro del programa se pueden realizar dos acciones:
      Una vez cargados los tres archivos se deberá hacer click en el boton "Verificar".
 
 
-POSIBLES PROBLEMAS/FAQ
-----------------------
+POSIBLES PROBLEMAS
+------------------
+ * "Error al inicar el modulo FIPS"
+   - ¿Se ejecuto el programa desde el script?
